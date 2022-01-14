@@ -36,6 +36,16 @@ write_file(std::filesystem::path path, const Node &node, Format format = Format:
   fstream << Writer(node, format).buffer();
 }
 
+template<typename T>
+inline void encode(Node &node, const T &object) {
+  Serializer<T>().encode(node, object);
+}
+
+template<typename T>
+inline void decode(const Node &node, T &object) {
+  Serializer<T>().decode(node, object);
+}
+
 }  // namespace sdata
 
 namespace sdata::literals {
