@@ -1,0 +1,14 @@
+tetris {
+	window {
+		width: 1920,
+		height: 1080,
+		title: 'Tetris game',
+		fullscreen: false
+	},
+	controls {
+		left: 'a',
+		right: 'd',
+		confirm: 'e',
+		pause: 'p'
+	}
+}

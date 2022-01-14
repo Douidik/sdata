@@ -1,0 +1,30 @@
+#ifndef REGEX_CATEGORY_HPP
+#define REGEX_CATEGORY_HPP
+
+namespace sdata {
+
+enum RegexCategory : char {
+  REGEX_TOKEN_SPACE = ' ',
+
+  REGEX_TOKEN_BLANK = '_',
+  REGEX_TOKEN_ALPHA = 'a',
+  REGEX_TOKEN_OPERATOR = 'o',
+  REGEX_TOKEN_NUMBER = 'n',
+  REGEX_TOKEN_QUOTE = 'Q',
+  REGEX_TOKEN_APOSTROPHE = 'q',
+  REGEX_TOKEN_ANY = '^',
+
+  REGEX_TOKEN_LITERAL = '\'',
+  REGEX_TOKEN_BEG_SEQ = '{',
+  REGEX_TOKEN_END_SEQ = '}',
+  REGEX_TOKEN_ALTERNATIVE = '|',
+
+  REGEX_TOKEN_QUEST = '?',
+  REGEX_TOKEN_KLEENE = '*',
+  REGEX_TOKEN_PLUS = '+',
+  REGEX_TOKEN_WAVE = '~'
+};
+
+}
+
+#endif

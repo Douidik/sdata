@@ -1,0 +1,11 @@
+format {
+	indent: '	',
+	assignment: ': ',
+	separator: ',\n',
+	quote: "'",
+	container_end: '\n',
+	array_bounds: [' [\n', ']'],
+	sequence_bounds: [' {\n', '}'],
+	anonymous_bounds: ['{\n\n', '\n}'],
+	anonymous_shift: -1		
+}

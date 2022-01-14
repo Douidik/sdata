@@ -1,0 +1,7 @@
+# CMake build file content
+build/*
+# Dot folders
+.*/
+# Emacs backup files
+*~
+\#*#
