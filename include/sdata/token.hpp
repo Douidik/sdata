@@ -35,7 +35,7 @@ struct Token {
     EMPTY = bit(13),
     COMMENT = bit(14),
     DONE = bit(15),
-    SKIP = EMPTY | COMMENT,
+    IGNORED = EMPTY | COMMENT,
 
     CATEGORY_COUNT = 16,
   };

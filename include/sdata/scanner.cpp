@@ -26,8 +26,8 @@ Token Scanner::tokenize() {
     throw ScannerException {"Unrecognized token", token};
   }
 
-  // skip comments and empty tokens
-  return !(token.category & Token::SKIP) ? token : tokenize();
+  // Skip ignored tokens
+  return !(token.category & Token::IGNORED) ? token : tokenize();
 }
 
 }  // namespace sdata
