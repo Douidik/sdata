@@ -101,7 +101,7 @@ public:
     return get<Array>().at(index);
   }
 
-  /// Pushes a variant to the array, throws a VariantException if the Array alternative is not available
+  /// Pushes a variant to the array
   inline Variant &push(auto &&...args) {
     return as<Array>().emplace_back(args...);
   }
