@@ -47,7 +47,7 @@ struct Style {
 };
 
 template<>
-class Serializer<Style> {
+class Serializer<Style> : std::true_type {
   void encode(Node& node, const Style& style) {
     node = Sequence {
       {"indent", style.indent},

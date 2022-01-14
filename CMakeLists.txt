@@ -9,7 +9,7 @@ project(
   LANGUAGES CXX
 )
 
-add_subdirectory(src/sdata/)
+add_subdirectory(include/sdata/)
 
 if (${SDATA_BUILD_FORMAT})
   project(sdata_format)

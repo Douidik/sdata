@@ -2,7 +2,7 @@
 #define SDATA_PARSER_TEST_HPP
 
 #include <catch2/catch_all.hpp>
-#include <sdata.hpp>
+#include <sdata/sdata.hpp>
 #include <sstream>
 
 using namespace sdata;

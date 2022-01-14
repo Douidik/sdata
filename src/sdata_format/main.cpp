@@ -64,8 +64,8 @@ Request parse_arguments(cxxopts::ParseResult &arguments) {
   }
 
   if (arguments.count("format")) {
-    auto node = sdata::parse_file(arguments["format"].as<fs::path>());
-    sdata::Serializer<sdata::Format>().encode(node, request.format);
+    fs::path path = arguments["format"].as<fs::path>();
+    request.format = sdata::parse_file(path);
   }
 
   {

@@ -1,8 +1,8 @@
 #ifndef SDATA_FORMAT_HPP
 #define SDATA_FORMAT_HPP
 
+#include "node.hpp"
 #include "serializer.hpp"
-#include <string>
 
 namespace sdata {
 
@@ -58,8 +58,7 @@ struct Format {
 };
 
 template<>
-class Serializer<Format> {
-public:
+struct Serializer<Format> : std::true_type {
   void encode(Node &node, const Format &format) {
     node = Sequence {
       {"indent", format.indent},

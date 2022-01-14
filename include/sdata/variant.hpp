@@ -6,7 +6,6 @@
 #include "misc/fmt.hpp"
 #include "type.hpp"
 #include <algorithm>
-#include <compare>
 #include <string>
 #include <variant>
 #include <vector>
@@ -31,10 +30,11 @@ private:
 
 // std::variant<> wrapper
 class Variant {
+public:
   using Native = std::variant<std::nullptr_t, Array, Sequence, float, int, bool, std::string>;
 
-public:
-  Variant(Native data = nullptr) : m_variant(data) {}
+  Variant(Native data) : m_variant(data) {}
+  Variant() : m_variant(nullptr) {}
 
   /// Current alternative type
   inline Type type() const {
@@ -66,7 +66,7 @@ public:
   template<typename T>
   inline T &get() {
     if (!std::holds_alternative<T>(m_variant)) {
-      throw VariantException {"Variant does not currently contain data of type T", this};
+      throw VariantException {"Variant does not currently contain data of type <T>", this};
     }
     return std::get<T>(m_variant);
   }
@@ -75,7 +75,7 @@ public:
   template<typename T>
   inline const T &get() const {
     if (!std::holds_alternative<T>(m_variant)) {
-      throw VariantException {"Variant does not currently contain data of type T", this};
+      throw VariantException {"Variant does not currently contain data of type <T>", this};
     }
     return std::get<T>(m_variant);
   }
@@ -86,9 +86,8 @@ public:
     return std::holds_alternative<T>(m_variant);
   }
 
-  auto &operator=(Native data) {
-    m_variant = data;
-    return *this;
+  inline auto &operator=(Native data) {
+    return (m_variant = data);
   }
 
   /// Access an array element as a mutable-reference

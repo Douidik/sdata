@@ -2,6 +2,7 @@
 #define SDATA_NODE_HPP
 
 #include "misc/exception.hpp"
+#include "serializer.hpp"
 #include "token.hpp"
 #include "variant.hpp"
 #include <string_view>
@@ -23,10 +24,22 @@ private:
 
 class Node : public Variant {
 public:
-  Node(std::string_view id, auto data) : Variant(data), m_id(id) {
+  Node(std::string_view id, Native data) : Variant(data), m_id(id) {
     if (!is_anonymous() && !Token::PATTERN.at(Token::ID).match(id)) {
       throw NodeException {"Naming convention violated [a-z A-Z 0-9 _]", this};
     }
+  }
+
+  template<typename T>
+  requires(Serializer<T>::value) explicit Node(const T &s) {
+    Serializer<T>().encode(*this, s);
+  }
+
+  template<typename T>
+  requires(Serializer<T>::value) operator T() const {
+    T s {};
+    Serializer<T>().decode(*this, s);
+    return s;
   }
 
   Node(Node &&) = default;
@@ -47,10 +60,10 @@ public:
     return as<Sequence>().emplace_back(args...);
   }
 
-  /// Access a sequence element as a mutable-reference
+  /// Access to a sequence element as a mutable-reference
   Node &operator[](std::string_view id);
 
-  /// Access a sequence element as a const-reference, throws a VariantException if the Sequence alternative is not available
+  /// Access to a sequence element as a const-reference, throws a VariantException if the Sequence alternative is not available
   const Node &at(std::string_view id) const;
 
   inline bool compare(const Node &other) const {

@@ -1,7 +1,7 @@
 #ifndef SDATA_WRITER_TEST_HPP
 #define SDATA_WRITER_TEST_HPP
 
-#include <sdata.hpp>
+#include <sdata/sdata.hpp>
 
 using namespace sdata;
 

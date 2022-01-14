@@ -1,7 +1,7 @@
 #ifndef SDATA_TYPE_HPP
 #define SDATA_TYPE_HPP
 
-#include "misc/fmt.hpp"
+#include <iostream>
 
 namespace sdata {
 
