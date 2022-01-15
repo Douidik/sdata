@@ -100,4 +100,5 @@ sdata_format is a program to format your sdata source code.
 sdata_format -p <source filepath> -s <raw source> -f <format sdata source> -t <format template [classic/inlined/minimal]>  
 # Example
 sdata_format -p examples/dialog.sd -t inlined
+sdata_format -s "person  {name : "John Doe", age    :54    }" -f examples/format.sd
 ```
