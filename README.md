@@ -6,18 +6,18 @@ The source code is easily readable and doesn't rely on any libraries on it's cor
 ```from 'examples/game.sd'```
 ```
 tetris {
-	window {
-		width: 1920,
-		height: 1080,
-		title: 'Tetris game',
-		fullscreen: false
-	},
-	controls {
-		left: 'a',
-		right: 'd',
-		confirm: 'e',
-		pause: 'p'
-	}
+    window {
+        width: 1920,
+        height: 1080,
+        title: 'Tetris game',
+        fullscreen: false
+    },
+    controls {
+        left: 'a',
+        right: 'd',
+        confirm: 'e',
+        pause: 'p'
+    }
 }
 ```
 ### Data types
