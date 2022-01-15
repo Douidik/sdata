@@ -1,7 +1,7 @@
 # About sdata
 The sdata language is a minimalist serialization language syntactically very close to JSON.  
 The language is designed to be human-readable, performant, easy-to-use and quickly mastered.  
-The source code is easily readable and doesn't rely on any libraries on it's core (fmt will be available soon on clang/gcc compiler as std::format).
+The source code is easily readable and the core doesn't rely on any libraries (fmt will be available soon on clang/gcc compiler as std::format).
 ## Syntax
 ```from 'examples/game.sd'```
 ```
