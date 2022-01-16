@@ -31,12 +31,12 @@ public:
   }
 
   template<typename T>
-  requires(Serializer<T>::value) explicit Node(const T &s) {
+  requires Serializer<T>::value explicit Node(const T &s) {
     Serializer<T>().encode(*this, s);
   }
 
   template<typename T>
-  requires(Serializer<T>::value) operator T() const {
+  requires Serializer<T>::value operator T() const {
     T s {};
     Serializer<T>().decode(*this, s);
     return s;
@@ -60,11 +60,21 @@ public:
     return as<Sequence>().emplace_back(args...);
   }
 
-  /// Access to a sequence element as a mutable-reference
+  /// Access by id to a sequence element as a mutable-reference, the member is created if not found
   Node &operator[](std::string_view id);
 
-  /// Access to a sequence element as a const-reference, throws a VariantException if the Sequence alternative is not available
+  /// Access by id to a sequence element as a const-reference
   const Node &at(std::string_view id) const;
+
+  /// Access by index to a sequence element as a mutable-reference
+  inline Node &operator[](size_t index) {
+    return as<Sequence>().at(index);
+  }
+
+  /// Access by index to a sequence element as a const-reference
+  inline const Node &at(size_t index) const {
+    return get<Sequence>().at(index);
+  }
 
   inline bool compare(const Node &other) const {
     return id() == other.id() && Variant::compare(other);

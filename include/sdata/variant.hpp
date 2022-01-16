@@ -90,21 +90,6 @@ public:
     return (m_variant = data);
   }
 
-  /// Access an array element as a mutable-reference
-  inline Variant &operator[](size_t index) {
-    return as<Array>().at(index);
-  }
-
-  /// Access an array element as a const-reference, throws a VariantException if the Array alternative is not available
-  inline const Variant &at(size_t index) const {
-    return get<Array>().at(index);
-  }
-
-  /// Pushes a variant to the array
-  inline Variant &push(auto &&...args) {
-    return as<Array>().emplace_back(args...);
-  }
-
   /// Returns a const-reference to the underlying std::variant<>
   const Native &native() const {
     return m_variant;
