@@ -1,6 +1,7 @@
 #ifndef SDATA_HPP
 #define SDATA_HPP
 
+#include "misc/escaped.hpp"
 #include "parser.hpp"
 #include "writer.hpp"
 #include <filesystem>
@@ -15,7 +16,9 @@ static std::string read_file(std::filesystem::path path) {
     throw Exception {fmt("Can't read source from: '{}'", path.string())};
   }
 
-  return {std::istreambuf_iterator(fstream), {}};
+  std::stringstream sstream {};
+  sstream << Escaped {fstream};
+  return sstream.str();
 }
 
 inline Node parse_str(std::string_view source) {
