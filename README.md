@@ -95,7 +95,7 @@ int main() {
 ```
 ## sdata_format
 sdata_format is a program to format your sdata source code.
-```
+```bash
 # Usage
 sdata_format -p <source filepath> -s <raw source> -f <format sdata source> -t <format template [classic/inlined/minimal]>  
 # Example

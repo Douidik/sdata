@@ -24,7 +24,7 @@ private:
 
 class Node : public Variant {
 public:
-  Node(std::string_view id, Native data) : Variant(data), m_id(id) {
+  Node(std::string_view id, auto variant) : Variant(variant), m_id(id) {
     if (!is_anonymous() && !Token::PATTERN.at(Token::ID).match(id)) {
       throw NodeException {"Naming convention violated [a-z A-Z 0-9 _]", this};
     }

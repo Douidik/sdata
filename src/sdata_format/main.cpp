@@ -68,7 +68,7 @@ Request parse_arguments(cxxopts::ParseResult &arguments) {
     request.format = sdata::parse_file(path);
   }
 
-  {
+  if (!arguments.count("format") && arguments.count("template")) {
     static const std::unordered_map<std::string_view, sdata::Format> TEMPLATE {
       {"classic", sdata::Format::classic()},
       {"inlined", sdata::Format::inlined()},
@@ -80,14 +80,18 @@ Request parse_arguments(cxxopts::ParseResult &arguments) {
     if (auto iter = TEMPLATE.find(name); iter != TEMPLATE.end()) {
       request.format = iter->second;
     } else {
-      throw Exception {fmt("No format template named '{}'", name)};
+      throw Exception {fmt("Unrecognized format template '{}'", name)};
     }
+  }
+
+  if (arguments.count("path") + arguments.count("source") < 1) {
+    throw Exception {"Unspecified source, please provide one with -s or -p"};
   }
 
   return request;
 }
 
-std::string perform_request(const Request &request) {
+std::string format(const Request &request) {
   const auto node = sdata::parse_str(request.source);
   return write_str(node, request.format);
 }
@@ -98,7 +102,7 @@ int main(int argc, char **argv) {
   try {
     auto arguments = sdata_format::create_options().parse(argc, argv);
     auto request = sdata_format::parse_arguments(arguments);
-    std::cout << sdata_format::perform_request(request) << std::endl;
+    std::cout << sdata_format::format(request) << std::endl;
   } catch (const std::exception &exception) {
     std::cerr << exception.what() << std::endl;
   }

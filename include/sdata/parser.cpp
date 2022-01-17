@@ -1,41 +1,46 @@
 #include "parser.hpp"
+#include "misc/parse_number.hpp"
 #include "misc/trim.hpp"
 
 namespace sdata {
 
 Parser::Parser(std::string_view source) : m_scanner(source) {}
 
-Node Parser::parse() {
-  Node root {"", nullptr};
-  parse_node(root);
-  auto &sequence = root.as<Sequence>();
-  return sequence.empty() ? root : sequence.at(0);
-}
+std::optional<Node> Parser::parse_node(bool required) {
+  Token token = required ? parse_token(Token::ID | Token::BEG_SEQ | Token::DONE)
+                         : parse_token(Token::ID | Token::BEG_SEQ);
 
-void Parser::parse_node(Node &owner) {
-  Token token = parse_token(Token::ID | Token::BEG_SEQ);
+  // No token available
+  if (token.category & Token::DONE) {
+    return std::nullopt;
+  }
 
   // Anonymous node
   if (token.category & Token::BEG_SEQ) {
-    Node &node = owner.emplace("", Sequence {});
-    return parse_sequence(node);
+    return Node {"", parse_sequence()};
   }
 
-  Node &node = owner.emplace(token.expression, nullptr);
+  Node node {token.expression, nullptr};
   Token assignment = parse_token(Token::ASSIGNMENT);
 
   if (assignment.category & Token::SET) {
     node = parse_variant();
   }
   if (assignment.category & Token::BEG_SEQ) {
-    parse_sequence(node);
+    node = parse_sequence();
   }
+
+  return node;
 }
 
-void Parser::parse_sequence(Node &owner) {
+Variant Parser::parse_sequence() {
+  Sequence sequence {};
+
   do {
-    parse_node(owner);
+    sequence.push_back(*parse_node(true));
   } while (parse_token(Token::SEPARATOR | Token::END_SEQ).category != Token::END_SEQ);
+
+  return {sequence};
 }
 
 Variant Parser::parse_variant() {
@@ -47,11 +52,11 @@ Variant Parser::parse_variant() {
     }
 
     case Token::FLOAT: {
-      return parse_number<float>(token);
+      return {parse_number<float>(token.expression)};
     }
 
     case Token::INT: {
-      return parse_number<int>(token);
+      return {parse_number<int>(token.expression)};
     }
 
     case Token::TRUE: {
@@ -79,7 +84,7 @@ Variant Parser::parse_array() {
   Array array {};
 
   do {
-    array.emplace_back(parse_variant());
+    array.push_back(parse_variant());
   } while (parse_token(Token::SEPARATOR | Token::END_ARR).category != Token::END_ARR);
 
   return {array};
