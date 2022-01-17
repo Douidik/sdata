@@ -23,7 +23,7 @@ public:
   }
 
 private:
-  std::optional<class Node> parse_node(bool required);
+  std::optional<Node> parse_node(bool required);
   Variant parse_sequence();
   Variant parse_variant();
   Variant parse_array();
