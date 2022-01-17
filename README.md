@@ -1,9 +1,14 @@
-# About sdata
+# 👇 About sdata
+
 The sdata language is a minimalist serialization language syntactically very close to JSON.  
 The language is designed to be human-readable, performant, easy-to-use and quickly mastered.  
-The source code is easily readable and the core doesn't rely on any libraries (fmt will be available soon on clang/gcc compiler as std::format).
+The source code is easily readable and the core doesn't rely on any libraries (fmt will be available soon on clang/gcc
+compiler as std::format).
+
 ## Syntax
+
 ```from 'examples/game.sd'```
+
 ```
 tetris {
     window {
@@ -20,19 +25,40 @@ tetris {
     }
 }
 ```
+
 ### Data types
-| Type             | Syntax                       | Example                            |
-|------------------|------------------------------|------------------------------------|
-| ```NIL```      | nil                          | the_void: nil                        |
+
+| Type           | Syntax                       | Example                              |
+|----------------|------------------------------|--------------------------------------|
+| ```NIL```      | nil                          | empty_node: nil                      |
 | ```ARRAY```    | [\<element\>, \<next\>, ...] | even: [2,4,6,8,10,12]                |
 | ```SEQUENCE``` | {\<member\>, \<next\>, ...}  | man { name: "John Doe", age: 32 }    |
 | ```FLOAT```    | \<decimal\>f                 | { ratio: 0.8f, seconds: 5.4 }        |
 | ```INT```      | \<integer\>                  | size: 2                              |
-| ```BOOL```     | \<true/false\>               |  { is_open: true, is_closed: false } |
-| ```STRING```   | \'\<data\>\' or \"\<data\>\" | { city: "Shanghai", native: \'上海\' }|
+| ```BOOL```     | \<true/false\>               | { is_open: true, is_closed: false }  |
+| ```STRING```   | \'\<data\>\' or \"\<data\>\" | { city: "Shanghai", native: \'上海\' } |
+
+## Build instructions
+
+```bash
+mkdir build && cd build
+cmake -G<generator> -DSDATA_BUILD_TEST=ON ..
+cd ../
+build/test/sdata_test
+```
+
+### Configuration (see ```cmake/conf.cmake```)
+
+| option                   | description                           |
+|--------------------------|---------------------------------------|
+| ```SDATA_BUILD_TEST```   | build sdata's test suite [OFF]        |
+| ```SDATA_BUILD_FORMAT``` | build sdata format tool [ON]          |
+| ```SDATA_ASSERTIONS```   | enable inner library assertions [OFF] |
 
 ## Getting started
+
 ```from 'examples/game.sd'```
+
 ```cpp
 #include <sdata/sdata.hpp>
 
@@ -91,10 +117,12 @@ int main() {
   // Deserialize the window to 'window.sd', the conversion must be explicit
   sdata::write_file("examples/window.sd", sdata::Node {window});
 }
-
 ```
+
 ## sdata_format
+
 sdata_format is a program to format your sdata source code.
+
 ```bash
 # Usage
 sdata_format -p <source filepath> -s <raw source> -f <format sdata source> -t <format template [classic/inlined/minimal]>  
