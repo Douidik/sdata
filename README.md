@@ -26,12 +26,15 @@ tetris {
 }
 ```
 
+### Language graph
+![sdata graph](sdata_graph.png)
+
 ### Data types
 
 | Type           | Syntax                       | Example                              |
 |----------------|------------------------------|--------------------------------------|
 | ```NIL```      | nil                          | empty_node: nil                      |
-| ```ARRAY```    | [\<element\>, \<next\>, ...] | even: [2,4,6,8,10,12]                |
+| ```ARRAY```    | \[\<item\>, \<next\>, ...\]  | even: \[nil, 2,"4",6,8,10,12\]       |
 | ```SEQUENCE``` | {\<member\>, \<next\>, ...}  | man { name: "John Doe", age: 32 }    |
 | ```FLOAT```    | \<decimal\>f                 | { ratio: 0.8f, seconds: 5.4 }        |
 | ```INT```      | \<integer\>                  | size: 2                              |
@@ -49,11 +52,11 @@ build/test/sdata_test
 
 ### Configuration (see ```cmake/conf.cmake```)
 
-| option                   | description                           |
-|--------------------------|---------------------------------------|
-| ```SDATA_BUILD_TEST```   | build sdata's test suite [OFF]        |
-| ```SDATA_BUILD_FORMAT``` | build sdata format tool [ON]          |
-| ```SDATA_ASSERTIONS```   | enable inner library assertions [OFF] |
+| option                   | description                             |
+|--------------------------|-----------------------------------------|
+| ```SDATA_BUILD_TEST```   | build sdata's test suite \[OFF\]        |
+| ```SDATA_BUILD_FORMAT``` | build sdata format tool \[ON\]          |
+| ```SDATA_ASSERTIONS```   | enable inner library assertions \[OFF\] |
 
 ## Getting started
 
