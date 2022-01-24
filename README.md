@@ -9,7 +9,7 @@ compilers as std::format).
 
 ```from 'examples/game.sd'```
 
-```json
+```yaml
 user {
   first_name: 'ავთანდილი',
   second_name: 'ხვედელიძე',
