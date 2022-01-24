@@ -24,13 +24,17 @@ private:
 
 class Node : public Variant {
 public:
-  Node(std::string_view id) : m_id {parse_id(id)}, Variant() {}
+  Node(std::string_view id) : m_id(parse_id(id)), Variant() {}
 
-  Node(std::string_view id, auto data) : m_id {parse_id(id)}, Variant(data) {}
+  Node(std::string_view id, auto data) : m_id(parse_id(id)), Variant(data) {}
+
+  Node(std::string_view id, std::initializer_list<Node> sequence) :
+    m_id(parse_id(id)),
+    Variant(sequence) {}
 
   template<typename T>
   requires(is_serialized<T>) Node(std::string_view id, T serialized) :
-    m_id {parse_id(id)},
+    m_id(parse_id(id)),
     Variant(Sequence {}) {
     serialize<T>(serialized);
   }

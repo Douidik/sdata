@@ -48,8 +48,12 @@ class Variant {
 public:
   using Native = std::variant<std::nullptr_t, Array, Sequence, float, int, bool, std::string>;
 
-  inline Variant(auto data) {
+  Variant(auto data) {
     emplace_variant(m_variant, data);
+  }
+
+  Variant(std::initializer_list<class Node> sequence) {
+    emplace_variant(m_variant, sequence);
   }
 
   Variant() : m_variant(nullptr) {}

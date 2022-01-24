@@ -31,7 +31,7 @@ requires(std::same_as<T, class Array>) struct _Traits<T> {
 };
 
 template<typename T>
-requires(std::same_as<T, class Sequence>) struct _Traits<T> {
+requires(any_of<T, class Sequence, std::initializer_list<class Node>>) struct _Traits<T> {
   constexpr static std::size_t index = Type::SEQUENCE;
 };
 
