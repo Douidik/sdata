@@ -4,16 +4,20 @@
 #include "misc/any_of.hpp"
 #include "misc/exception.hpp"
 #include "misc/fmt.hpp"
-#include "type.hpp"
+#include "traits.hpp"
 #include <algorithm>
-#include <string>
 #include <variant>
 #include <vector>
 
 namespace sdata {
 
-using Array = std::vector<class Variant>;
-using Sequence = std::vector<class Node>;
+struct Array : std::vector<class Variant> {
+  using std::vector<class Variant>::vector;
+};
+
+struct Sequence : std::vector<class Node> {
+  using std::vector<class Node>::vector;
+};
 
 class VariantException : public Exception {
 public:
@@ -28,81 +32,114 @@ private:
   const Variant &m_variant;
 };
 
-// std::variant<> wrapper
+// std::variant<...> wrapper
 class Variant {
+  template<typename T, typename V>
+  static auto *get_variant(V &variant) {
+    auto *ptr = std::get_if<Traits<T>::index>(&variant);
+    return ptr;
+  }
+
+  template<typename T, typename V>
+  static auto &emplace_variant(V &variant, T data) {
+    return variant.template emplace<Traits<T>::index>(data);
+  }
+
 public:
   using Native = std::variant<std::nullptr_t, Array, Sequence, float, int, bool, std::string>;
 
-  Variant(Native data) : m_variant(data) {}
-  Variant() : m_variant(nullptr) {}
+  inline Variant(auto data) {
+    emplace_variant(m_variant, data);
+  }
 
-  /// Current alternative type
+  Variant() : m_variant(nullptr) {}
+  Variant(const Variant &) = default;
+
   inline Type type() const {
     return static_cast<Type>(m_variant.index());
   }
 
-  /// Get a mutable-reference alternative of <T> or sets the variant to a default-constructed <T> if not available
-  template<typename T>
-  inline T &as() {
-    if (!std::holds_alternative<T>(m_variant)) {
-      m_variant = T {};
-    }
-    return std::get<T>(m_variant);
-  }
-
-  /// Get a mutable-reference alternative of <T> or the default_data if not available
-  template<typename T>
-  inline T &get(T &default_data) {
-    return std::holds_alternative<T>(m_variant) ? std::get<T>(m_variant) : default_data;
-  }
-
-  /// Get a const-refernce alternative of <T> or the default_data if not available
-  template<typename T>
-  inline const T &get(const T &default_data) const {
-    return std::holds_alternative<T>(m_variant) ? std::get<T>(m_variant) : default_data;
-  }
-
-  /// Get a mutable-refernce alternative of <T>, throws a VariantException if the alternative is not available
-  template<typename T>
-  inline T &get() {
-    if (!std::holds_alternative<T>(m_variant)) {
-      throw VariantException {"Variant does not currently contain data of type <T>", this};
-    }
-    return std::get<T>(m_variant);
-  }
-
-  /// Get a const-refernce alternative of <T>, throws a VariantException if the alternative is not available
-  template<typename T>
-  inline const T &get() const {
-    if (!std::holds_alternative<T>(m_variant)) {
-      throw VariantException {"Variant does not currently contain data of type <T>", this};
-    }
-    return std::get<T>(m_variant);
-  }
-
-  /// Is the currently held alternative of type <T>
   template<typename T>
   inline bool is() const {
-    return std::holds_alternative<T>(m_variant);
+    return type() == Traits<T>::index;
   }
 
-  inline auto &operator=(Native data) {
-    return (m_variant = data);
+  inline auto &operator=(auto data) {
+    return set(data);
   }
 
-  /// Returns a const-reference to the underlying std::variant<>
   const Native &native() const {
     return m_variant;
   }
 
-  /// Returns a mutable-reference to the underlying std::variant<>
   Native &native() {
     return m_variant;
   }
 
-  bool compare(const Variant &other) const;
+  template<typename T>
+  inline auto &set(T data) {
+    return emplace_variant(m_variant, data);
+  }
+
+  template<typename T>
+  inline auto &as() {
+    return type() != Traits<T>::index ? *get_variant<T>(m_variant)
+                                      : emplace_variant<T>(m_variant, T {});
+  }
+
+  template<typename T>
+  auto &get() {
+    if (type() != Traits<T>::index) {
+      throw_variant_unavailable<T>();
+    }
+    return *get_variant<T>(m_variant);
+  }
+
+  template<typename T>
+  const auto &get() const {
+    if (type() != Traits<T>::index) {
+      throw_variant_unavailable<T>();
+    }
+    return *get_variant<T>(m_variant);
+  }
+
+  template<typename T>
+  inline const auto *get_ptr() const {
+    return get_variant<T>(m_variant);
+  }
+
+  template<typename T>
+  inline auto *get_ptr() {
+    return get_variant<T>(m_variant);
+  }
+
+  inline Variant &at(size_t n) {
+    return get<Array>().at(n);
+  }
+
+  inline const Variant &at(size_t n) const {
+    return get<Array>().at(n);
+  }
+
+  inline Variant &operator[](size_t n) {
+    return at(n);
+  }
+
+  inline const Variant &operator[](size_t n) const {
+    return at(n);
+  }
+
+  bool operator==(const Variant &other) const;
 
 protected:
+  template<typename T>
+  void throw_variant_unavailable() const {
+    throw VariantException {
+      fmt("Variant alternative not available for type <{}>", static_cast<Type>(Traits<T>::index)),
+      this,
+    };
+  }
+
   Native m_variant;
 };
 

@@ -2,8 +2,12 @@
 
 namespace sdata {
 
-Writer::Writer(const Node &node, Format format) : m_root(node), m_format(format) {
-  write_node(m_root, 0);
+Writer::Writer(const Node &node, Format format) : m_format(format) {
+  write_node(node, 0);
+}
+
+Writer::Writer(const Variant &variant, Format format) : m_format(format) {
+  write_variant(variant, 0);
 }
 
 void Writer::write_node(const Node &node, int depth) {
@@ -24,15 +28,15 @@ void Writer::write_node(const Node &node, int depth) {
   write_variant(node, depth);
 }
 
-void Writer::write_variant(const Variant &variant, int depth) {
-  switch (variant.type()) {
+void Writer::write_variant(const Variant &node, int depth) {
+  switch (node.type()) {
     case ARRAY: {
-      const auto &array = variant.get<Array>();
+      const auto &array = node.get<Array>();
       return write_container(array, &Writer::write_variant, m_format.array_bounds, depth);
     }
 
     case SEQUENCE: {
-      const auto &sequence = variant.get<Sequence>();
+      const auto &sequence = node.get<Sequence>();
       return write_container(sequence, &Writer::write_node, m_format.sequence_bounds, depth);
     }
 
@@ -41,20 +45,22 @@ void Writer::write_variant(const Variant &variant, int depth) {
     }
 
     case FLOAT: {
-      return write("{:f}", variant.get<float>());
+      return write("{:f}", node.get<float>());
     }
 
     case INT: {
-      return write("{:d}", variant.get<int>());
+      return write("{:d}", node.get<int>());
     }
 
     case BOOL: {
-      return write("{}", variant.get<bool>());
+      return write("{}", node.get<bool>());
     }
 
     case STRING: {
-      return write("{}{:s}{}", m_format.quote, variant.get<std::string>(), m_format.quote);
+      return write("{}{:s}{}", m_format.quote, node.get<std::string>(), m_format.quote);
     }
+
+    default: return;
   }
 }
 

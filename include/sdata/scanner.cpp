@@ -21,7 +21,7 @@ Token Scanner::tokenize() {
   }
 
   if (token.category & Token::NONE) {
-    // Token unrecognized by scanner, split the token by space for debug
+    // Token unrecognized by scanner, split the token by space
     token.expression = {m_iter, std::find(m_iter, m_source.end(), ' ')};
     throw ScannerException {"Unrecognized token", token};
   }

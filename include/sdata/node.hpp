@@ -24,28 +24,22 @@ private:
 
 class Node : public Variant {
 public:
-  Node(std::string_view id, auto variant) : Variant(variant), m_id(id) {
-    if (!is_anonymous() && !Token::PATTERN.at(Token::ID).match(id)) {
-      throw NodeException {"Naming convention violated [a-z A-Z 0-9 _]", this};
-    }
-  }
+  Node(std::string_view id) : m_id {parse_id(id)}, Variant() {}
+
+  Node(std::string_view id, auto data) : m_id {parse_id(id)}, Variant(data) {}
 
   template<typename T>
-  requires Serializer<T>::value explicit Node(const T &s) {
-    Serializer<T>().encode(*this, s);
-  }
-
-  template<typename T>
-  requires Serializer<T>::value operator T() const {
-    T s {};
-    Serializer<T>().decode(*this, s);
-    return s;
+  requires(is_serialized<T>) Node(std::string_view id, T serialized) :
+    m_id {parse_id(id)},
+    Variant(Sequence {}) {
+    serialize<T>(serialized);
   }
 
   Node(Node &&) = default;
   Node(const Node &) = default;
   Node &operator=(const Node &) = default;
   using Variant::operator=;
+  using Variant::operator[];
 
   inline std::string_view id() const {
     return m_id;
@@ -55,32 +49,68 @@ public:
     return m_id.empty();
   }
 
-  /// Emplaces a node to the sequence
-  inline Node &emplace(auto &&...args) {
-    return as<Sequence>().emplace_back(args...);
-  }
-
-  /// Access by id to a sequence element as a mutable-reference, the member is created if not found
-  Node &operator[](std::string_view id);
-
-  /// Access by id to a sequence element as a const-reference
+  Node *search(std::string_view id);
+  const Node *search(std::string_view id) const;
+  Node &at(std::string_view id);
   const Node &at(std::string_view id) const;
+  Node &operator[](std::string_view id);
+  Node &insert(const Node &member);
 
-  /// Access by index to a sequence element as a mutable-reference
-  inline Node &operator[](size_t index) {
-    return as<Sequence>().at(index);
+  inline Node &insert(std::string_view id, auto data) {
+    return insert(Node {id, data});
   }
 
-  /// Access by index to a sequence element as a const-reference
-  inline const Node &at(size_t index) const {
-    return get<Sequence>().at(index);
+  inline bool operator==(const Node &other) const {
+    return id() == other.id() && Variant::operator==(other);
   }
 
-  inline bool compare(const Node &other) const {
-    return id() == other.id() && Variant::compare(other);
+  template<typename T>
+  requires(is_serialized<T>) operator T() const {
+    T object {};
+    deserialize<T>(object);
+    return object;
   }
 
 private:
+  template<typename S>
+  requires(is_schemed<S>) void serialize(S &schemed) {
+    auto visitor = [this](const auto &property) {
+      insert(property.id, property.data);
+    };
+
+    Serializer<S>::visit(visitor, Serializer<S>().map(schemed));
+  }
+
+  template<typename S>
+  requires(is_schemed<S>) void deserialize(S &schemed) const {
+    auto visitor = [this]<typename T>(SchemeProperty<T> &property) {
+      property.data = at(property.id).template get<T>();
+    };
+
+    Serializer<S>::visit(visitor, Serializer<S>().map(schemed));
+  }
+
+  template<typename C>
+  requires(is_converted<C>) void serialize(const C &converted) {
+    Serializer<C>().encode(*this, converted);
+  }
+
+  template<typename C>
+  requires(is_converted<C>) void deserialize(C &converted) const {
+    Serializer<C>().decode(*this, converted);
+  }
+
+  void throw_member_not_found(std::string_view id) const {
+    throw NodeException {fmt("Member named '{}' not found in node sequence", id), this};
+  }
+
+  std::string parse_id(std::string_view id) const {
+    if (!id.empty() && !Token::PATTERN.at(Token::ID).match(id)) {
+      throw NodeException {"Naming convention violation [a-z A-Z 0-9 _]", this};
+    }
+    return std::string {id};
+  }
+
   std::string m_id;
 };
 

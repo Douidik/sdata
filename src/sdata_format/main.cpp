@@ -28,13 +28,13 @@ cxxopts::Options create_options() {
     "formatting",
     {
       {
-        "p,path",
-        "sdata source filepath | -p <path>",
+        "s,source",
+        "sdata source filepath | -s <filepath>",
         cxxopts::value<fs::path>(),
       },
       {
-        "s,source",
-        R"(raw sdata source within quotes | -s "<source>")",
+        "r,raw",
+        R"(raw sdata source within quotes | -r "<raw source>")",
         cxxopts::value<std::string>(),
       },
       {
@@ -55,12 +55,12 @@ cxxopts::Options create_options() {
 Request parse_arguments(cxxopts::ParseResult &arguments) {
   Request request {};
 
-  if (arguments.count("path")) {
-    request.source = sdata::read_file(arguments["path"].as<fs::path>());
+  if (arguments.count("source")) {
+    request.source = sdata::read_file(arguments["source"].as<fs::path>());
   }
 
-  if (arguments.count("source")) {
-    request.source = arguments["source"].as<std::string>();
+  if (arguments.count("raw")) {
+    request.source = arguments["raw"].as<std::string>();
   }
 
   if (arguments.count("format")) {
@@ -68,7 +68,7 @@ Request parse_arguments(cxxopts::ParseResult &arguments) {
     request.format = sdata::parse_file(path);
   }
 
-  if (!arguments.count("format") && arguments.count("template")) {
+  if (arguments.count("template") && !arguments.count("format")) {
     static const std::unordered_map<std::string_view, sdata::Format> TEMPLATE {
       {"classic", sdata::Format::classic()},
       {"inlined", sdata::Format::inlined()},
@@ -84,8 +84,8 @@ Request parse_arguments(cxxopts::ParseResult &arguments) {
     }
   }
 
-  if (arguments.count("path") + arguments.count("source") < 1) {
-    throw Exception {"Unspecified source, please provide one with -s or -p"};
+  if (request.source.empty()) {
+    throw Exception {"No source specified, please provide one with -s or -r"};
   }
 
   return request;
@@ -105,6 +105,7 @@ int main(int argc, char **argv) {
     std::cout << sdata_format::format(request) << std::endl;
   } catch (const std::exception &exception) {
     std::cerr << exception.what() << std::endl;
+    return EXIT_FAILURE;
   }
 
   return EXIT_SUCCESS;

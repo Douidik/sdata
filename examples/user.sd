@@ -1,0 +1,24 @@
+user {
+	first_name: 'ავთანდილი',
+	second_name: 'ხვედელიძე',
+	gender: 'male',
+	country: 'Georgia',
+	features {
+		age: 58,
+		height: 1.890000,
+		weight: 82.599998,
+		blood_type: 'O+'
+	},
+	coordinates {
+		email: 'eteri94@test130.com',
+		username: 'aleksi96',
+		password: ':g~=5KP_vm|~cI8',
+		phones:  [
+			'+61 2 0109 5481',
+			'+61 8 1339 3768'
+		]
+	},
+	meta {
+		source: 'https://namefake.com/georgian-georgia/male/c3c0a2f4ce2336fa49ba13e24f978f79'
+	}
+}

@@ -9,15 +9,15 @@ namespace sdata {
 class Writer : public BasicWriter {
 public:
   explicit Writer(const Node &node, Format format = Format::classic());
+  explicit Writer(const Variant &variant, Format format = Format::inlined());
 
 private:
   void write_node(const Node &node, int depth);
   void write_variant(const Variant &variant, int depth);
   void write_indent(int depth);
 
-  void
-  write_container(const auto &container, auto write_fn, std::string (&bounds)[2], int depth) {
-    write("{}", bounds[0]);
+  void write_container(const auto &container, auto write_fn, Format::Bounds bounds, int depth) {
+    write("{}", bounds.open);
 
     for (size_t i = 0; i < container.size(); i++) {
       write_indent(depth + 1);
@@ -31,11 +31,10 @@ private:
     }
 
     write_indent(depth);
-    write("{}", bounds[1]);
+    write("{}", bounds.close);
   }
 
   Format m_format;
-  const Node &m_root;
 };
 
 inline std::ostream &operator<<(std::ostream &os, Node &node) {

@@ -2,27 +2,37 @@
 
 The sdata language is a minimalist serialization language syntactically very close to JSON.  
 The language is designed to be human-readable, performant, easy-to-use and quickly mastered.  
-The source code is easily readable and the core doesn't rely on any libraries (fmt will be available soon on clang/gcc
-compiler as std::format).
+The source code is easily readable and the core doesn't rely on any libraries (fmt will be available soon on clang and gcc
+compilers as std::format).
 
 ## Syntax
 
 ```from 'examples/game.sd'```
 
-```
-tetris {
-    window {
-        width: 1920,
-        height: 1080,
-        title: 'Tetris game',
-        fullscreen: false
-    },
-    controls {
-        left: 'a',
-        right: 'd',
-        confirm: 'e',
-        pause: 'p'
-    }
+```json
+user {
+  first_name: 'ავთანდილი',
+  second_name: 'ხვედელიძე',
+  gender: 'male',
+  country: 'Georgia',
+  features {
+    age: 58,
+    height: 1.890000,
+    weight: 82.599998,
+    blood_type: 'O+'
+  },
+  coordinates {
+    email: 'eteri94@test130.com',
+    username: 'aleksi96',
+    password: ':g~=5KP_vm|~cI8',
+    phones:  [
+      '+61 2 0109 5481',
+      '+61 8 1339 3768'
+    ]
+  },
+  meta {
+    source: 'https://namefake.com/georgian-georgia/male/c3c0a2f4ce2336fa49ba13e24f978f79'
+  }
 }
 ```
 
@@ -60,65 +70,42 @@ build/test/sdata_test
 
 ## Getting started
 
-```from 'examples/game.sd'```
+```from 'examples/game.cpp'```
 
 ```cpp
 #include <sdata/sdata.hpp>
 
-// POD struct
+// Window properties struct
 struct Window {
-  int width, height;
-  std::string title {};
+  unsigned width, height;
+  std::string_view title {};
   bool fullscreen;
 };
 
-// Specializing sdata::Serializer for type <Window>
+// User-defined serialization derived from Scheme<...> for Window
+// You can also derive the Serializer from Convert<...>
 template<>
-struct sdata::Serializer<Window> : std::true_type {
-  // NOTE: Serializer<Window> definition is using the sdata's namespace implicitly
-
-  // Deserialize a sdata::Node using the Window
-  void encode(Node &node, const Window &window) {
-    // Create the node hierarchy with a Sequence (collection of nodes)
-    node = {
-      "window",
-      Sequence {
-        {"width", window.width},
-        {"height", window.height},
-        {"title", window.title},
-        {"fullscreen", window.fullscreen},
-      },
-    };
-  }
-
-  // Serialize a Window using a sdata::Node
-  void decode(const Node &node, Window &window) {
-    window = {
-      // We access the targetted node with .at()
-      // Then we grab the underlying value with get<T>()
-      // Optionally you can get pass a default value to get
-      .width = node.at("width").get<int>(800),
-      .height = node.at("height").get<int>(600),
-      .title = node.at("title").get<std::string>(),
-      .fullscreen = node.at("fullscreen").get<bool>(),
+struct sdata::Serializer<Window> : Scheme<Window(unsigned, unsigned, std::string_view, bool)> {
+  // We map the sdata::node to window properties
+  Map map(Window &window) override {
+    return {
+      {"width", window.width},
+      {"height", window.height},
+      {"title", window.title},
+      {"fullscreen", window.fullscreen},
     };
   }
 };
 
 int main() {
-  // Read and parse the sdata source with parse_file
-  // The conversion is implicit because we specialized Serializer<Window>
+  // Read and parse the sdata source with sdata::parse_file
   Window window = sdata::parse_file("examples/game.sd").at("window");
 
-  // Modify the window settings
-  {
-    window.width = 1280, window.height = 720;
-    window.title = "Hello world";
-    window.fullscreen = false;
-  }
+  // Tweak window settings
+  window = Window {.width = 1280, .height = 720, .title = "Hello world"};
 
   // Deserialize the window to 'window.sd', the conversion must be explicit
-  sdata::write_file("examples/window.sd", sdata::Node {window});
+  sdata::write_file("examples/window.sd", sdata::Node {"window", window});
 }
 ```
 
@@ -128,8 +115,8 @@ sdata_format is a program to format your sdata source code.
 
 ```bash
 # Usage
-sdata_format -p <source filepath> -s <raw source> -f <format sdata source> -t <format template [classic/inlined/minimal]>  
+sdata_format -s <source filepath> -r <raw source> -f <format sdata source> -t <format template [classic/inlined/minimal]>  
 # Example
-sdata_format -p examples/dialog.sd -t inlined
-sdata_format -s "person  {name : \"John Doe\", age    :54    }" -f examples/format.sd
+sdata_format -s examples/dialog.sd -t inlined
+sdata_format -r "person  {name : \"John Doe\", age    :54    }" -f examples/format.sd
 ```

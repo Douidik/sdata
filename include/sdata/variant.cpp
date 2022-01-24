@@ -1,7 +1,7 @@
 #include "variant.hpp"
 #include "misc/any_of.hpp"
 #include "node.hpp"
-#include <compare>
+#include "writer.hpp"
 
 namespace sdata {
 
@@ -13,28 +13,20 @@ std::string VariantException::message(std::string_view description, const Varian
   constexpr std::string_view PATTERN =
     "[sdata::VariantException raised]: {}\n"
     "with {{\n"
-    "\tvariant of type <{}>\n"
+    "\tvariant<{}>: {}\n"
     "}}";
 
-  return fmt(PATTERN, description, variant->type());
+  return fmt(PATTERN, description, variant->type(), Writer(*variant).buffer());
 }
 
-bool Variant::compare(const Variant &other) const {
-  constexpr auto visitor = []<typename T, typename U>(const T &a, const U &b) -> bool {
+bool Variant::operator==(const Variant &other) const {
+  constexpr auto visitor = []<typename T, typename U>(const T &v, const U &w) {
     if constexpr (!std::same_as<T, U>) {
       return false;
-    }
-
-    else if constexpr (any_of<T, Array, Sequence>) {
-      return std::ranges::equal(a, b, [](const auto &m, const auto &n) { return m.compare(n); });
-    }
-
-    else if constexpr (any_of<T, float, int, bool, std::string>) {
-      return a == b;
-    }
-
-    else {
+    } else if constexpr (Traits<T>::index == Type::NIL) {
       return true;
+    } else {
+      return v == w;
     }
   };
 

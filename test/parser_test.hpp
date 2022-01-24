@@ -97,9 +97,9 @@ static const Node features = {
 };
 
 TEST_CASE("Parser") {
-  CHECK(parse_file("examples/game.sd").compare(game));
-  CHECK(parse_file("examples/dialog.sd").compare(dialog));
-  CHECK(parse_file("examples/features.sd").compare(features));
+  CHECK(parse_file("examples/game.sd") == game);
+  CHECK(parse_file("examples/dialog.sd") == dialog);
+  CHECK(parse_file("examples/features.sd") == features);
 }
 
 #endif

@@ -1,5 +1,5 @@
 format {
-	indent: '	',
+	indent: '  ',
 	assignment: ': ',
 	separator: ',\n',
 	quote: "'",

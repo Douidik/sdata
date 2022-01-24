@@ -9,7 +9,7 @@ bool test_writer(std::filesystem::path path) {
   auto expected = sdata::parse_file(path);
   auto written = sdata::write_str(expected);
   auto result = sdata::parse_str(written);
-  return result.compare(expected);
+  return result == expected;
 }
 
 TEST_CASE("Writer") {
