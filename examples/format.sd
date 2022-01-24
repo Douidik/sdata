@@ -1,4 +1,4 @@
-format {
+standard {
 	indent: '  ',
 	assignment: ': ',
 	separator: ',\n',

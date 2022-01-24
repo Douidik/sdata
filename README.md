@@ -132,7 +132,7 @@ sdata_format is a program to format your sdata source code.
 
 ```bash
 # Usage
-sdata_format -s <source filepath> -r <raw source> -f <format sdata source> -t <format template [classic/inlined/minimal]>  
+sdata_format -s <source filepath> -r <raw source> -f <format sdata source> -t <format template [standard/inlined/standard]>  
 # Example
 sdata_format -s examples/dialog.sd -t inlined
 sdata_format -r "person  {name : \"John Doe\", age    :54    }" -f examples/format.sd

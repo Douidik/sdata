@@ -46,51 +46,62 @@ class Variant {
   }
 
 public:
+  /// Wrapped std::variant templated type
   using Native = std::variant<std::nullptr_t, Array, Sequence, float, int, bool, std::string>;
 
+  /// Variant data constructor
   Variant(auto data) {
     emplace_variant(m_variant, data);
   }
 
+  /// Variant sequence constructor
   Variant(std::initializer_list<class Node> sequence) {
     emplace_variant(m_variant, sequence);
   }
 
   Variant() : m_variant(nullptr) {}
+
   Variant(const Variant &) = default;
 
+  /// Variant alternative index
   inline Type type() const {
     return static_cast<Type>(m_variant.index());
   }
 
+  /// Does the variant contain value of type <T> ?
   template<typename T>
   inline bool is() const {
     return type() == Traits<T>::index;
   }
 
+  /// Assigns the variant value
   inline auto &operator=(auto data) {
     return set(data);
   }
 
+  /// Get the wrapped std::variant
   const Native &native() const {
     return m_variant;
   }
 
+  /// Get the wrapped std::variant
   Native &native() {
     return m_variant;
   }
 
+  /// Assigns the variant value
   template<typename T>
   inline auto &set(T data) {
     return emplace_variant(m_variant, data);
   }
 
+  /// Get the variant alternative <T> or a default-constructed value if not available
   template<typename T>
   inline auto &as() {
-    return type() != Traits<T>::index ? *get_variant<T>(m_variant)
-                                      : emplace_variant<T>(m_variant, T {});
+    return is<T>() ? *get_variant<T>(m_variant) : emplace_variant<T>(m_variant, T {});
   }
 
+  /// Get a variant alternative <T> reference
   template<typename T>
   auto &get() {
     if (type() != Traits<T>::index) {
@@ -99,6 +110,7 @@ public:
     return *get_variant<T>(m_variant);
   }
 
+  /// Get a variant alternative <T> const-reference
   template<typename T>
   const auto &get() const {
     if (type() != Traits<T>::index) {
@@ -107,32 +119,39 @@ public:
     return *get_variant<T>(m_variant);
   }
 
+  /// Get a variant alternative <T> pointer or nullptr if not available
   template<typename T>
   inline const auto *get_ptr() const {
     return get_variant<T>(m_variant);
   }
 
+  /// Get a variant alternative <T> const-pointer or nullptr if not available
   template<typename T>
   inline auto *get_ptr() {
     return get_variant<T>(m_variant);
   }
 
+  /// Get the n-th item of the array
   inline Variant &at(size_t n) {
     return get<Array>().at(n);
   }
 
+  /// Get the n-th item of the array
   inline const Variant &at(size_t n) const {
     return get<Array>().at(n);
   }
 
+  /// Get the n-th item of the array
   inline Variant &operator[](size_t n) {
     return at(n);
   }
 
+  /// Get the n-th item of the array
   inline const Variant &operator[](size_t n) const {
     return at(n);
   }
 
+  /// Recursive variant value comparator
   bool operator==(const Variant &other) const;
 
 protected:

@@ -29,12 +29,12 @@ inline Node parse_file(std::filesystem::path path) {
   return parse_str(read_file(path));
 }
 
-inline std::string write_str(const Node &node, Format format = Format::classic()) {
+inline std::string write_str(const Node &node, Format format = Format::standard()) {
   return std::string {Writer(node, format).buffer()};
 }
 
 inline void
-write_file(std::filesystem::path path, const Node &node, Format format = Format::classic()) {
+write_file(std::filesystem::path path, const Node &node, Format format = Format::standard()) {
   std::ofstream fstream {path, std::ios::out};
   fstream << Writer(node, format).buffer();
 }

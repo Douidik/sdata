@@ -8,7 +8,7 @@ namespace sdata {
 
 class Writer : public BasicWriter {
 public:
-  explicit Writer(const Node &node, Format format = Format::classic());
+  explicit Writer(const Node &node, Format format = Format::standard());
   explicit Writer(const Variant &variant, Format format = Format::inlined());
 
 private:

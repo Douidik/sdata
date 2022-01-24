@@ -44,8 +44,8 @@ cxxopts::Options create_options() {
       },
       {
         "t,template",
-        "format template [classic/inlined/minimal] | -t <name>",
-        cxxopts::value<std::string>()->default_value("classic"),
+        "format template [standard/inlined/minimal] | -t <name>",
+        cxxopts::value<std::string>()->default_value("standard"),
       },
     });
 
@@ -70,7 +70,7 @@ Request parse_arguments(cxxopts::ParseResult &arguments) {
 
   if (arguments.count("template") && !arguments.count("format")) {
     static const std::unordered_map<std::string_view, sdata::Format> TEMPLATE {
-      {"classic", sdata::Format::classic()},
+      {"standard", sdata::Format::standard()},
       {"inlined", sdata::Format::inlined()},
       {"minimal", sdata::Format::minimal()},
     };

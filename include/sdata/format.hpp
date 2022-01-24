@@ -10,7 +10,7 @@ struct Format {
   /// Tokens
   std::string_view indent, assignment, separator, quote, container_end;
 
-  /// Container bounds token
+  /// Container bounds tokens
   struct Bounds {
     std::string_view open, close;
   } array_bounds, sequence_bounds, anonymous_bounds;
@@ -18,7 +18,7 @@ struct Format {
   /// Shifts the indentation of the anonymous content
   int anonymous_shift;
 
-  static Format classic() {
+  static Format standard() {
     return {
       "  ",
       ": ",
