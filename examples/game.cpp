@@ -3,7 +3,7 @@
 // Window properties pod struct
 struct Window {
   unsigned width, height;
-  std::string_view title {};
+  std::string_view title;
   bool fullscreen;
 };
 
@@ -29,6 +29,6 @@ int main() {
   // Tweak window settings
   window = Window {.width = 1280, .height = 720, .title = "Hello world"};
 
-  // Deserialize the window to 'window.sd', the conversion must be explicit
+  // Deserialize the window instance to 'window.sd'
   sdata::write_file("examples/window.sd", sdata::Node {"window", window});
 }

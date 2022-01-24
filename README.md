@@ -78,7 +78,7 @@ build/test/sdata_test
 // Window properties struct
 struct Window {
   unsigned width, height;
-  std::string_view title {};
+  std::string_view title;
   bool fullscreen;
 };
 
