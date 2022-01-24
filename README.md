@@ -7,7 +7,7 @@ compilers as std::format).
 
 ## Syntax
 
-```from 'examples/game.sd'```
+```from 'examples/user.sd'```
 
 ```yaml
 user {
