@@ -12,7 +12,7 @@ compilers as std::format).
 ```yaml
 user {
   first_name: 'ავთანდილი',
-  second_name: 'ხვედელიძე',
+  last_name: 'ხვედელიძე',
   gender: 'male',
   country: 'Georgia',
   features {
