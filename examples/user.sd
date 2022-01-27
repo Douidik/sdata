@@ -3,13 +3,13 @@ user {
 	last_name: 'ხვედელიძე',
 	gender: 'male',
 	country: 'Georgia',
-	features {
+	appearance {
 		age: 58,
 		height: 1.890000,
 		weight: 82.599998,
 		blood_type: 'O+'
 	},
-	coordinates {
+	details {
 		email: 'eteri94@test130.com',
 		username: 'aleksi96',
 		password: ':g~=5KP_vm|~cI8',
