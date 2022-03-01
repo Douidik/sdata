@@ -1,7 +1,7 @@
 #ifndef SDATA_PARSER_TEST_HPP
 #define SDATA_PARSER_TEST_HPP
 
-#include <catch2/catch_all.hpp>
+#include <catch2/catch.hpp>
 #include <sdata/sdata.hpp>
 #include <sstream>
 

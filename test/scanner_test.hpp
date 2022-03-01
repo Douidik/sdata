@@ -1,7 +1,7 @@
 #ifndef SDATA_SCANNER_TEST_HPP
 #define SDATA_SCANNER_TEST_HPP
 
-#include <catch2/catch_all.hpp>
+#include <catch2/catch.hpp>
 #include <sdata/sdata.hpp>
 
 using namespace sdata;

@@ -1,11 +1,12 @@
 #ifndef SDATA_WRITER_TEST_HPP
 #define SDATA_WRITER_TEST_HPP
 
+#include <catch2/catch.hpp>
 #include <sdata/sdata.hpp>
 
 using namespace sdata;
 
-bool test_writer(std::filesystem::path path) {
+static bool test_writer(std::filesystem::path path) {
   auto expected = sdata::parse_file(path);
   auto written = sdata::write_str(expected);
   auto result = sdata::parse_str(written);

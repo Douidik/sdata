@@ -1,7 +1,7 @@
 #ifndef SDATA_REGEX_TEST_HPP
 #define SDATA_REGEX_TEST_HPP
 
-#include <catch2/catch_all.hpp>
+#include <catch2/catch.hpp>
 #include <iomanip>
 #include <iostream>
 #include <sdata/regex/regex.hpp>
