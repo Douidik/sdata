@@ -36,8 +36,7 @@ private:
 class Variant {
   template<typename T, typename V>
   static auto *get_variant(V &variant) {
-    auto *ptr = std::get_if<Traits<T>::index>(&variant);
-    return ptr;
+    return std::get_if<Traits<T>::index>(&variant);
   }
 
   template<typename T, typename V>
