@@ -23,7 +23,7 @@ endif()
 fetchcontent_declare(
   fmt
   GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-  GIT_TAG master
+  GIT_TAG 8.1.1
 )
 
 fetchcontent_makeavailable(fmt)

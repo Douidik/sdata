@@ -2,7 +2,6 @@
 #define SDATA_FMT_HPP
 
 #include <fmt/format.h>
-#include <fmt/ostream.h>
 
 namespace sdata {
 
