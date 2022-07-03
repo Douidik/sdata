@@ -12,10 +12,10 @@ std::string NodeException::message(std::string_view description, const Node *nod
   constexpr std::string_view PATTERN =
     "[sdata::NodeException raised]: {}\n"
     "with {{\n"
-    "\tnode <{}> '{}': {}\n"
+    "\t{}"
     "}}";
 
-  return fmt(PATTERN, description, node->type(), node->id());
+  return fmt(PATTERN, description, Writer(*node, Format::inlined()).buffer());
 }
 
 template<typename S>

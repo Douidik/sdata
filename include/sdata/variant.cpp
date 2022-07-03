@@ -16,7 +16,7 @@ std::string VariantException::message(std::string_view description, const Varian
     "\tvariant<{}>: {}\n"
     "}}";
 
-  return fmt(PATTERN, description, variant->type(), Writer(*variant).buffer());
+  return fmt(PATTERN, description, variant->type(), Writer(*variant, Format::inlined()).buffer());
 }
 
 bool Variant::operator==(const Variant &other) const {
