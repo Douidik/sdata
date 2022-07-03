@@ -7,5 +7,6 @@ standard {
 	array_bounds: [' [\n', ']'],
 	sequence_bounds: [' {\n', '}'],
 	anonymous_bounds: ['{\n\n', '\n}'],
-	anonymous_shift: -1		
+	anonymous_shift: -1,
+	flat: false,
 }

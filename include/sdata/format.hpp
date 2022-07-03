@@ -18,6 +18,9 @@ struct Format {
   /// Shifts the indentation of the anonymous content
   int anonymous_shift;
 
+  /// Don't shift the content depending on the current identation level
+  bool flat;
+
   static Format standard() {
     return {
       "  ",
@@ -29,6 +32,7 @@ struct Format {
       {" {\n", "}"},
       {"{\n", "\n}"},
       -1,
+      false,
     };
   }
 
@@ -36,19 +40,20 @@ struct Format {
     return {
       " ",
       ": ",
-      ", ",
+      ",",
       "'",
       "",
       {" [", "]"},
       {" {", "}"},
       {"{", "}"},
       0,
+      true,
     };
   }
 
   static Format minimal() {
     return {
-      "",
+      " ",
       ":",
       ",",
       "'",
@@ -57,6 +62,7 @@ struct Format {
       {"{", "}"},
       {"{", "}"},
       0,
+      true,
     };
   }
 };
@@ -81,6 +87,7 @@ struct Serializer<Format> : Convert<Format> {
       node.at("sequence_bounds"),
       node.at("anonymous_bounds"),
       node.at("anonymous_shift").get<int>(),
+      node.at("flat").get<bool>(),
     };
   }
 };

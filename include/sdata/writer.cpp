@@ -65,7 +65,7 @@ void Writer::write_variant(const Variant &node, int depth) {
 }
 
 void Writer::write_indent(int depth) {
-  for (int i = 0; i < depth; i++) {
+  for (int i = 0; i < (m_format.flat ? 1 : depth); i++) {
     write("{}", m_format.indent);
   }
 }
