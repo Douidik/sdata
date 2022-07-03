@@ -12,7 +12,7 @@ std::string NodeException::message(std::string_view description, const Node *nod
   constexpr std::string_view PATTERN =
     "[sdata::NodeException raised]: {}\n"
     "with {{\n"
-    "\t{}"
+    "\t{}\n"
     "}}";
 
   return fmt(PATTERN, description, Writer(*node, Format::inlined()).buffer());
