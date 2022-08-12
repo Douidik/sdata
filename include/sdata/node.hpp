@@ -106,7 +106,11 @@ private:
   template<typename S>
   requires(is_schemed<S>) void deserialize(S &schemed) const {
     auto visitor = [this]<typename T>(SchemeProperty<T> &property) {
-      property.data = at(property.id).template get<T>();
+      if constexpr (is_serialized<std::decay_t<T>>) {
+        property.data = at(property.id);
+      } else {
+        property.data = at(property.id).template get<T>();
+      }
     };
 
     Serializer<S>::visit(visitor, Serializer<S>().map(schemed));

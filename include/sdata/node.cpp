@@ -62,7 +62,7 @@ Node &Node::operator[](std::string_view id) {
 }
 
 Node &Node::insert(const Node &member) {
-  Node *found = nullptr;  //= search(member.id());
+  Node *found = search(member.id());
 
   if (!found) {
     Sequence &sequence = std::get<Sequence>(m_variant);
